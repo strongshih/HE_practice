@@ -1,0 +1,3 @@
+[submodule "01_SEAL_practice/SEAL"]
+	path = 01_SEAL_practice/SEAL
+	url = https://github.com/microsoft/SEAL.git
