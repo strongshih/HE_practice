@@ -12,7 +12,8 @@
 cd HE_practice/01_SEAL_practice/
 git submodule update --init --recursive
 cd SEAL/
-cmake -S . -B build -DSEAL_BUILD_EXAMPLES=ON -DCMAKE_INSTALL_PREFIX=~/mylibs
+git checkout 6bfac481aae4057ea887d42eb0f24371e9b4c4f9
+cmake -S . -B build -DSEAL_BUILD_EXAMPLES=ON -DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT=OFF -DCMAKE_INSTALL_PREFIX=~/mylibs
 cmake --build build
 cmake --install build
 ```
@@ -56,7 +57,7 @@ cmake --build .
 
 - reference implementation
     - [LoLa](https://arxiv.org/pdf/1812.10659.pdf)
-    - [Reference implementation](./)
+    - [Reference implementation](./mnist/20210305.pdf)
     - [Video](https://tinyurl.com/pnhxmhbt)
 
 ## Challenge
