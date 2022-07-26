@@ -1,3 +1,6 @@
 [submodule "01_SEAL_practice/SEAL"]
 	path = 01_SEAL_practice/SEAL
 	url = https://github.com/microsoft/SEAL.git
+[submodule "02_Lattigo_practice/lattigo"]
+	path = 02_Lattigo_practice/lattigo
+	url = https://github.com/tuneinsight/lattigo
