@@ -5,12 +5,10 @@ import (
 	"math"
 	"github.com/tuneinsight/lattigo/v3/ckks"
 	"github.com/tuneinsight/lattigo/v3/rlwe"
-	//"github.com/tuneinsight/lattigo/v3/utils"
 )
 
 func innerProduct() {
-	var err error
-
+	// https://github.com/tuneinsight/lattigo/blob/master/ckks/params.go#L49
 	params, err := ckks.NewParametersFromLiteral(ckks.PN14QP438)
 	if err != nil {
 		panic(err)
@@ -33,7 +31,10 @@ func innerProduct() {
 	decryptor := ckks.NewDecryptor(params, sk)
 
 	// Evaluator
-	evaluator := ckks.NewEvaluator(params, rlwe.EvaluationKey{Rlk: rlk})
+	// See all the functions provided here: https://github.com/tuneinsight/lattigo/blob/master/ckks/evaluator.go#L23
+	rots := []int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}
+	rotkey := kgen.GenRotationKeysForRotations(rots, true, sk)
+	evaluator := ckks.NewEvaluator(params, rlwe.EvaluationKey{Rlk: rlk, Rtks: rotkey})
 
 	// Values to encrypt
 	values := make([]float64, params.Slots())
@@ -57,8 +58,15 @@ func innerProduct() {
 	ciphertext = encryptor.EncryptNew(plaintext)
 
 	//ciphertext := evaluator.MulRelinNew(ciphertext, ciphertext);
-	evaluator.MulRelin(ciphertext, ciphertext, ciphertext);
-	evaluator.Rescale(ciphertext, params.DefaultScale(), ciphertext);
+	evaluator.Mul(ciphertext, ciphertext, ciphertext)
+	evaluator.Relinearize(ciphertext, ciphertext)
+	evaluator.Rescale(ciphertext, params.DefaultScale(), ciphertext)
+
+	//temp_cipher2 := NewCiphertext(evaluator.params, ciphertext.Degree(), ciphertext.Level(), ciphertext.Scale)
+	for i := 16; i>0; i>>=1 {
+		temp_cipher2 := evaluator.RotateNew(ciphertext, i);
+		evaluator.Add(ciphertext, temp_cipher2, ciphertext);
+	}
 
 	fmt.Println("Done... Consumed levels:", params.MaxLevel()-ciphertext.Level())
 
