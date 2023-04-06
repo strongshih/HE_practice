@@ -27,7 +27,7 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 cd HE_practice/02_Lattigo_practice/
 git submodule update --init
 cd lattigo
-git checkout 8df1d3bed79e315f527c1c5fc9704f5df9de0f11
+git checkout 93c14ff71ed9fb687bcfee76c1b850a7f487b573
 ```
 
 - Test
@@ -49,5 +49,9 @@ go run main.go
 
 ```
 cd 02_Lattigo_practice/mnist
+rm go.sum go.mod
+go mod init test                                                       // generate go.mod
+go mod tidy                                                            // generate go.sum
+go mod edit -replace github.com/tuneinsight/lattigo/v4=../lattigo/  // point to modified version
 go run main.go data.go
 ```
